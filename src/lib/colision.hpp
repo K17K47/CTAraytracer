@@ -17,34 +17,15 @@
 *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef RAY_HPP_
-#define RAY_HPP_
+#ifndef COLISION_HPP_
+#define COLISION_HPP_
 
-#include"aux/math.hpp"
-#include"aux/octree.hpp"
-#include"lib/colision.hpp"
-#include"lib/model.hpp"
-
-class Ray{
+class colision{
    public:
-      Vector3 origin;
-      Vector3 dir;
-   public:
-      template <typename T, unsigned N>
-      int intersectOctree(Octree<T,N> *octree, std::vector<colision> *colisions);
+      real tMin, tMax;
+      OctreeNode* node;
 
-      int intersectTriangle(Triangle *tri, colision *col);
-   private:
-      int firstNode(Vector3 t0, Vector3 tm);
-      int newNode(Vector3 t, Vector3 v);
-
-      template <typename T, unsigned N>
-      void procSubtree(Vector3 t0, Vector3 t1, OctreeNode* node, std::vector<colision> *colisions);
-
-      template <typename T, unsigned N>
-      void rayParameter(Octree<T,N> *oct, std::vector<colision> *colisions);
+      colision(real tMin, real tMax, OctreeNode* node) : tMin(tMin), tMax(tMax), node(node) {}
 };
-
-#include"lib/ray.tpp"
 
 #endif

@@ -22,9 +22,9 @@
 
 #include"aux/math.hpp"
 
-class octreeNode{
+class OctreeNode{
    public:
-   octreeNode* parent;
+   OctreeNode* parent;
    Vector3 pivot;
    real sz;
 
@@ -32,37 +32,38 @@ class octreeNode{
 };
 
 template<typename T, unsigned N>
-class octreeBranch : public octreeNode{
+class OctreeBranch : public OctreeNode{
    public:
-   octreeNode* children[8];
+   OctreeNode* children[8];
 
-   octreeBranch(Vector3 center, real size, octreeBranch* parentNode);
+   OctreeBranch(Vector3 center, real size, OctreeBranch* parentNode);
    int insert(T obj, Vector3 pos);
    int insert(std::vector<T> obj, std::vector<Vector3> pos);
    void split(unsigned idx);
 
    bool isLeaf();
+   bool isTerminal();
 
    unsigned locate(Vector3 pos);
 };
 
 template<typename T, unsigned N>
-class octreeLeaf : public octreeNode{
+class OctreeLeaf : public OctreeNode{
    public:
    std::vector<T> obj(N);
    std::vector<Vector3> objPos(N);
 
-   octreeLeaf(Vector3 center, real size, octreeBranch<T,N>* parentNode);
+   OctreeLeaf(Vector3 center, real size, OctreeBranch<T,N>* parentNode);
    bool empty = true;
    bool isLeaf();
 };
 
 template <typename T, unsigned N>
-class octree{
+class Octree{
    public:
-   octreeBranch<T,N>* root;
+   OctreeBranch<T,N>* root;
 
-   octree(Vector3 center, real sz);
+   Octree(Vector3 center, real sz);
    int build(std::vector<T> obj, std::vector<Vector3> pos);
 };
 

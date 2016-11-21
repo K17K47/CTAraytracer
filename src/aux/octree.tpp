@@ -18,7 +18,7 @@
 */
 
 template <typename T, unsigned N>
-octreeBranch<T,N>::octreeBranch(Vector3 center, real size, octreeBranch<T,N>* parentNode){
+OctreeBranch<T,N>::OctreeBranch(Vector3 center, real size, OctreeBranch<T,N>* parentNode){
    Vector3 tmp;
    real halfSz = size/2;
    real quarterSz = size/4;
@@ -48,15 +48,24 @@ octreeBranch<T,N>::octreeBranch(Vector3 center, real size, octreeBranch<T,N>* pa
          tmp[2]-=quarterSz;
       }
 
-      children[i] = new octreeLeaf<T,N>(tmp, halfSz, this);
+      children[i] = new OctreeLeaf<T,N>(tmp, halfSz, this);
    }
 }
 
 template <typename T, unsigned N>
-bool octreeBranch<T,N>::isLeaf() {return false;}
+bool OctreeBranch<T,N>::isLeaf() {return false;}
 
 template <typename T, unsigned N>
-unsigned octreeBranch<T,N>::locate(Vector3 pos){
+bool OctreeBranch<T,N>::isTerminal(){
+   for(int i=0; i<8; i++){
+      if(!children[i]->isLeaf()) return false;
+   }
+
+   return true;
+}
+
+template <typename T, unsigned N>
+unsigned OctreeBranch<T,N>::locate(Vector3 pos){
    unsigned idx = 0;
 
    if((real_abs(pivot[0] - pos[0]) > sz/2) ||
@@ -76,27 +85,27 @@ unsigned octreeBranch<T,N>::locate(Vector3 pos){
 }
 
 template <typename T, unsigned N>
-int octreeBranch<T,N>::insert(T obj, Vector3 pos){
+int OctreeBranch<T,N>::insert(T obj, Vector3 pos){
    unsigned idx = locate(pos);
 
    if(idx==8) return -1;
 
    if(children[idx]->isLeaf()){
-      if(dynamic_cast<octreeLeaf<T,N>*>(children[idx])->obj.size()!=N){
-         dynamic_cast<octreeLeaf<T,N>*>(children[idx])->obj.push_back(obj);
-         dynamic_cast<octreeLeaf<T,N>*>(children[idx])->objPos.push_back(pos);
+      if(dynamic_cast<OctreeLeaf<T,N>*>(children[idx])->obj.size()!=N){
+         dynamic_cast<OctreeLeaf<T,N>*>(children[idx])->obj.push_back(obj);
+         dynamic_cast<OctreeLeaf<T,N>*>(children[idx])->objPos.push_back(pos);
          return 0;
       }else{
          split(idx);
-         return dynamic_cast<octreeBranch<T,N>*>(children[idx])->insert(obj, pos);
+         return dynamic_cast<OctreeBranch<T,N>*>(children[idx])->insert(obj, pos);
       }
    }else{
-      return dynamic_cast<octreeBranch<T,N>*>(children[idx])->insert(obj, pos);
+      return dynamic_cast<OctreeBranch<T,N>*>(children[idx])->insert(obj, pos);
    }
 }
 
 template <typename T, unsigned N>
-int octreeBranch<T,N>::insert(std::vector<T> obj, std::vector<Vector3> pos){
+int OctreeBranch<T,N>::insert(std::vector<T> obj, std::vector<Vector3> pos){
    for(int i=0; i<obj.size(); i++){
       if(insert(obj[i], pos[i])) return -1;
    }
@@ -105,29 +114,29 @@ int octreeBranch<T,N>::insert(std::vector<T> obj, std::vector<Vector3> pos){
 
 
 template <typename T, unsigned N>
-void octreeBranch<T,N>::split(unsigned idx){
-   octreeLeaf<T,N> tmp = *dynamic_cast<octreeLeaf<T,N>*>(children[idx]);
+void OctreeBranch<T,N>::split(unsigned idx){
+   OctreeLeaf<T,N> tmp = *dynamic_cast<OctreeLeaf<T,N>*>(children[idx]);
    delete children[idx];
-   children[idx] = new octreeBranch<T,N>(tmp.pivot, tmp.sz, this);
-   dynamic_cast<octreeBranch<T,N>*>(children[idx])->insert(tmp.obj, tmp.objPos);
+   children[idx] = new OctreeBranch<T,N>(tmp.pivot, tmp.sz, this);
+   dynamic_cast<OctreeBranch<T,N>*>(children[idx])->insert(tmp.obj, tmp.objPos);
 }
 
 template <typename T, unsigned N>
-octreeLeaf<T,N>::octreeLeaf(Vector3 center, real size, octreeBranch<T,N>* parentNode){
+OctreeLeaf<T,N>::OctreeLeaf(Vector3 center, real size, OctreeBranch<T,N>* parentNode){
    parent = parentNode;
    pivot = center;
    sz = size;
 }
 
 template <typename T, unsigned N>
-bool octreeLeaf<T,N>::isLeaf() {return true;}
+bool OctreeLeaf<T,N>::isLeaf() {return true;}
 
 template <typename T, unsigned N>
-octree<T,N>::octree(Vector3 center, real sz){
-   root = new octreeBranch<T,N>(center, sz, nullptr);
+Octree<T,N>::Octree(Vector3 center, real sz){
+   root = new OctreeBranch<T,N>(center, sz, nullptr);
 }
 
 template <typename T, unsigned N>
-int octree<T,N>::build(std::vector<T> obj, std::vector<Vector3> pos){
+int Octree<T,N>::build(std::vector<T> obj, std::vector<Vector3> pos){
    return root->insert(obj[i], pos[i]);
 }
