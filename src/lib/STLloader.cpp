@@ -60,12 +60,27 @@ int loadSTLModel(Model **model, std::string path){
 
       Triangle tri;
 
+      Vector3 xCoords, yCoords, zCoords;
+
       for(int i=0; i<fileHeader.triangleCount; i++){
             (*model)->vtx.push_back(Vector3(buffer[i].vtx1[0],buffer[i].vtx1[1],buffer[i].vtx1[2]));
             (*model)->vtx.push_back(Vector3(buffer[i].vtx2[0],buffer[i].vtx2[1],buffer[i].vtx2[2]));
             (*model)->vtx.push_back(Vector3(buffer[i].vtx3[0],buffer[i].vtx3[1],buffer[i].vtx3[2]));
 
             (*model)->nor.push_back(Vector3(buffer[i].normal[0],buffer[i].normal[1],buffer[i].normal[2]));
+
+            xCoords = Vector3(buffer[i].vtx1[0],buffer[i].vtx2[0],buffer[i].vtx3[0]);
+            yCoords = Vector3(buffer[i].vtx1[1],buffer[i].vtx2[1],buffer[i].vtx3[1]);
+            zCoords = Vector3(buffer[i].vtx1[2],buffer[i].vtx2[2],buffer[i].vtx3[2]);
+
+            if((xCoords.minCoeff() < (*model)->minX) || i==0) (*model)->minX = xCoords.minCoeff();
+            if((xCoords.maxCoeff() > (*model)->maxX) || i==0) (*model)->maxX = xCoords.maxCoeff();
+
+            if((yCoords.minCoeff() < (*model)->minY) || i==0) (*model)->minY = yCoords.minCoeff();
+            if((yCoords.maxCoeff() > (*model)->maxY) || i==0) (*model)->maxY = yCoords.maxCoeff();
+
+            if((zCoords.minCoeff() < (*model)->minZ) || i==0) (*model)->minZ = zCoords.minCoeff();
+            if((zCoords.maxCoeff() > (*model)->maxZ) || i==0) (*model)->maxZ = zCoords.maxCoeff();
 
             for(int j=0; j<3; j++) tri.v[j] = i*3+j;
             tri.n = i;
