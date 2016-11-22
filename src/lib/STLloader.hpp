@@ -21,18 +21,25 @@
 #define STLLOADER_HPP_
 
 #include<cstdint>
+#include<string>
 
+#include"lib/model.hpp"
+
+#pragma pack(1)
 struct STL_Header{
-   uint8_t[80] header;
+   uint8_t header[80];
    uint32_t triangleCount;
 };
 
+#pragma pack(1)
 struct STL_Triangle{
-   float[3] normal;
-   float[3] vtx1;
-   float[3] vtx2;
-   float[3] vtx3;
+   float normal[3];
+   float vtx1[3];
+   float vtx2[3];
+   float vtx3[3];
    uint16_t attr;
 };
+
+int loadSTLModel(Model **model, std::string str);
 
 #endif
