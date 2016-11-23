@@ -36,8 +36,8 @@ int main(){
    Vector3 v1 = Vector3(0, 4, 0);
    Vector3 v2 = Vector3(0, 0, 4);
 
-   unsigned nx = 200;
-   unsigned ny = 200;
+   unsigned nx = 400;
+   unsigned ny = 400;
 
    real x,y;
 
