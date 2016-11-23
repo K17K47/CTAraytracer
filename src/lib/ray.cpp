@@ -50,18 +50,28 @@ real Ray::intersectTriangle(Vector3 tri[3]){ //Möller-Trumbore Algorithm
    return t;
 }
 
-real Ray::intersectModel(Model *model){
+RayTriangleColl Ray::intersectModel(Model *model){
    real t;
-   real tmin = 0.0;
    Vector3 v[3];
+
+   RayTriangleColl coll;
+
+   coll.t = 0.0;
 
    for(int i=0; i<model->triangles.size(); i++){
       for(int j=0; j<3; j++) v[j]=model->vtx[model->triangles[i].v[j]];
       t = intersectTriangle(v);
-      if(t>0.0 && (t<tmin || tmin==0.0)) tmin=t;
+      if(t>0.0 && (t<coll.t || coll.t==0.0)){
+         coll.t=t;
+         coll.triangleIdx=i;
+      }
    }
 
-   return tmin;
+   if(coll.t!=0.0){
+      coll.n=model->vtx[model->triangles[coll.triangleIdx].n];
+   }
+
+   return coll;
 }
 
 #endif

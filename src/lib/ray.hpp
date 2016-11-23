@@ -23,13 +23,20 @@
 #include"aux/math.hpp"
 #include"lib/model.hpp"
 
+struct RayTriangleColl{
+      real t;
+      Vector3 n;
+      int triangleIdx;
+};
+
+
 class Ray{
    public:
       Vector3 origin;
       Vector3 dir;
    public:
       real intersectTriangle(Vector3 v[3]);
-      real intersectModel(Model *model);
+      RayTriangleColl intersectModel(Model *model);
 };
 
 #endif
