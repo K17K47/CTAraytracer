@@ -21,6 +21,8 @@
 #define RAY_HPP_
 
 #include"aux/math.hpp"
+#include"aux/octree.hpp"
+#include"lib/colision.hpp"
 #include"lib/model.hpp"
 
 class Ray{
@@ -28,8 +30,21 @@ class Ray{
       Vector3 origin;
       Vector3 dir;
    public:
-      real intersectTriangle(Vector3 v[3]);
-      real intersectModel(Model *model);
+      template <typename T, unsigned N>
+      int intersectOctree(Octree<T,N> *octree, std::vector<colision> *colisions);
+
+      int intersectTriangle(Triangle *tri, colision *col);
+   private:
+      int firstNode(Vector3 t0, Vector3 tm);
+      int newNode(Vector3 t, Vector3 v);
+
+      template <typename T, unsigned N>
+      void procSubtree(Vector3 t0, Vector3 t1, OctreeNode* node, std::vector<colision> *colisions);
+
+      template <typename T, unsigned N>
+      void rayParameter(Octree<T,N> *oct, std::vector<colision> *colisions);
 };
+
+#include"lib/ray.tpp"
 
 #endif
