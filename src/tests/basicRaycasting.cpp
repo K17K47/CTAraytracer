@@ -39,7 +39,9 @@ int main(){
    unsigned nx = 200;
    unsigned ny = 200;
 
-   real x,y,t;
+   real x,y;
+
+   RayTriangleColl coll;
 
    Vector3 dir, ori, p;
 
@@ -63,14 +65,15 @@ int main(){
 
          //std::cout<<"Raio "<<xIdx<<" "<<yIdx<<"\n";
          //std::cout<<ori;
-         t = ray.intersectModel(model);
+         coll = ray.intersectModel(model);
          //std::cout<<"Parametro da colisao"<<t<<"\n";
-         if(t>0) img[xIdx][yIdx]=1;
+         if(coll.t>0) img[xIdx][yIdx]=real_abs(dir.dot(coll.n))*255;
       }
    }
 
-   std::cout<<"P1\n";
+   std::cout<<"P2\n";
    std::cout<<nx<<" "<<ny<<"\n";
+   std::cout<<"255";
    for(int yIdx=0; yIdx<ny; yIdx++){
       for(int xIdx=0; xIdx<nx; xIdx++){
          std::cout<<img[xIdx][yIdx]<<" ";
