@@ -69,6 +69,7 @@ RayTriangleColl Ray::intersectModel(Model *model){
 
    if(coll.t!=0.0){
       coll.n=model->vtx[model->triangles[coll.triangleIdx].n];
+      coll.attr=model->triangles[coll.triangleIdx].type;
    }
 
    return coll;

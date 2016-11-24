@@ -23,7 +23,7 @@
 #include"aux/math.hpp"
 #include"lib/STLloader.hpp"
 
-int loadSTLModel(Model **model, std::string path){
+int loadSTLModel(Model **model, std::string path, int attr){
    std::ifstream file (path.c_str(), std::ifstream::in | std::ifstream::binary);
    if(file){
       file.seekg(0, file.end);
@@ -87,7 +87,7 @@ int loadSTLModel(Model **model, std::string path){
 
             for(int j=0; j<3; j++) tri.v[j] = i*3+j;
             tri.n = i;
-            tri.type = buffer[i].attr;
+            tri.type = attr;
             (*model)->triangles.push_back(tri);
       }
    }

@@ -26,6 +26,7 @@
 struct RayTriangleColl{
       real t;
       Vector3 n;
+      int attr;
       int triangleIdx;
 };
 
