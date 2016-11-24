@@ -17,29 +17,19 @@
 *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef MODEL_HPP_
-#define MODEL_HPP_
+#include"lib/model.hpp"
 
-#include"aux/math.hpp"
+void Model::merge(Model *model){
+   vtx.insert(vtx.end(), model->vtx.begin(), model->vtx.end());
+   nor.insert(nor.end(), model->nor.begin(), model->nor.end());
+   triangle.insert(triangle.end(), model->triangle.begin(), model->triangle.end());
 
-struct Triangle{
-   int v[3]; //Vertex index
-   int n;   //Normal index
-   int type; //0-Opaque,1-Reflective,2-CCD
-};
+   if(minX > model->minX) minX = model->minX;
+   if(maxX < model->maxX) maxX = model->maxX;
 
-class Model{
-   public:
-      std::vector<Vector3> vtx;
-      std::vector<Vector3> nor;
-      std::vector<Triangle> triangles;
+   if(minY > model->minY) minY = model->minY;
+   if(maxY < model->maxY) maxY = model->maxY;
 
-      real minX, maxX;
-      real minY, maxY;
-      real minZ, maxZ;
-
-   public:
-      void merge(Model *model);
-};
-
-#endif
+   if(minZ > model->minZ) minZ = model->minZ;
+   if(maxZ < model->maxZ) maxZ = model->maxZ;
+}
