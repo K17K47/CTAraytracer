@@ -46,7 +46,7 @@ int main(){
    rayt.eye = Vector3(16,0,0);
    rayt.right = Vector3(0,3,0);
    rayt.up = Vector3(0,0,3);
-   rayt.frustum = Vector3(19,0,0);
+   rayt.frustum = Vector3(17,0,0);
 
    rayt.persp = true;
 
