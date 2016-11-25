@@ -22,61 +22,45 @@
 #include"lib/model.hpp"
 #include"lib/ray.hpp"
 #include"lib/STLloader.hpp"
+#include"lib/raytracer.hpp"
 
 int main(){
-   Model *model;
+   Raytracer rayt;
 
-   if(loadSTLModel(&model, "model.stl")){
+   if(loadSTLModel(&rayt.model, "telescopeReflector.stl", CollType::Reflective)){
       std::cout<<"Falha ao carregar modelo!"<<std::endl;
       return 255;
    }
 
-   Vector3 c = Vector3(10, -2, -2);
-   Vector3 n = Vector3(-1, 0, 0);
-   Vector3 v1 = Vector3(0, 4, 0);
-   Vector3 v2 = Vector3(0, 0, 4);
+   Model *model;
 
-   unsigned nx = 400;
-   unsigned ny = 400;
-
-   real x,y;
-
-   RayTriangleColl coll;
-
-   Vector3 dir, ori, p;
-
-   Ray ray;
-
-   int img[nx][ny];
-
-   memset(img, 0, nx*ny*sizeof(int));
-
-   for(int xIdx=0; xIdx<nx; xIdx++){
-      for(int yIdx=0; yIdx<ny; yIdx++){
-         x=(xIdx*1.0)/(nx*1.0);
-         y=(yIdx*1.0)/(ny*1.0);
-
-         ori = c+x*v1+y*v2;
-
-         dir = n;
-
-         ray.origin = ori;
-         ray.dir = dir;
-
-         //std::cout<<"Raio "<<xIdx<<" "<<yIdx<<"\n";
-         //std::cout<<ori;
-         coll = ray.intersectModel(model);
-         //std::cout<<"Parametro da colisao"<<t<<"\n";
-         if(coll.t>0) img[xIdx][yIdx]=real_abs(dir.dot(coll.n))*255;
-      }
+   if(loadSTLModel(&model, "telescopeBeams.stl", CollType::Opaque)){
+      std::cout<<"Falha ao carregar modelo!"<<std::endl;
+      return 255;
    }
 
+   rayt.model->merge(model);
+
+   delete model;
+
+   rayt.eye = Vector3(16,0,0);
+   rayt.right = Vector3(0,3,0);
+   rayt.up = Vector3(0,0,3);
+   rayt.frustum = Vector3(19,0,0);
+
+   rayt.persp = true;
+
+   rayt.resx = 400;
+   rayt.resy = 400;
+
+   rayt.run();
+
    std::cout<<"P2\n";
-   std::cout<<nx<<" "<<ny<<"\n";
-   std::cout<<"255";
-   for(int yIdx=0; yIdx<ny; yIdx++){
-      for(int xIdx=0; xIdx<nx; xIdx++){
-         std::cout<<img[xIdx][yIdx]<<" ";
+   std::cout<<rayt.resx<<" "<<rayt.resy<<"\n";
+   std::cout<<"255\n";
+   for(int yIdx=0; yIdx<rayt.resy; yIdx++){
+      for(int xIdx=0; xIdx<rayt.resx; xIdx++){
+         std::cout<<rayt.img[xIdx*rayt.resy+yIdx]<<" ";
       }
       std::cout<<"\n";
    }
