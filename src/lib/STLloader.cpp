@@ -23,7 +23,7 @@
 #include"aux/math.hpp"
 #include"lib/STLloader.hpp"
 
-int loadSTLModel(Model **model, std::string path, int attr){
+int loadSTLModel(Model **model, std::string path, CollType attr){
    std::ifstream file (path.c_str(), std::ifstream::in | std::ifstream::binary);
    if(file){
       file.seekg(0, file.end);

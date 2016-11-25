@@ -22,10 +22,16 @@
 
 #include"aux/math.hpp"
 
+enum CollType {
+   None = 0,
+   Opaque = 1,
+   Reflective = 2
+};
+
 struct Triangle{
    int v[3]; //Vertex index
    int n;   //Normal index
-   int type; //0-Opaque,1-Reflective,2-CCD
+   CollType type; //0-Opaque,1-Reflective,2-CCD
 };
 
 class Model{

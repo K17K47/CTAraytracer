@@ -20,9 +20,17 @@
 #include"lib/model.hpp"
 
 void Model::merge(Model *model){
+   int vOldSize = vtx.size();
    vtx.insert(vtx.end(), model->vtx.begin(), model->vtx.end());
+   int nOldSize = nor.size();
    nor.insert(nor.end(), model->nor.begin(), model->nor.end());
-   triangle.insert(triangle.end(), model->triangle.begin(), model->triangle.end());
+   int tOldSize = triangles.size();
+   triangles.insert(triangles.end(), model->triangles.begin(), model->triangles.end());
+
+   for(int i=tOldSize; i<triangles.size(); i++){
+      for(int j=0; j<3; j++) triangles[i].v[j]+=vOldSize;
+      triangles[i].n = nOldSize;
+   }
 
    if(minX > model->minX) minX = model->minX;
    if(maxX < model->maxX) maxX = model->maxX;
