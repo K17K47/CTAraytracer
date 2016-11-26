@@ -52,7 +52,7 @@ int main(){
    rayt.right = Vector3(0,-3,0);    //Set basis for
    rayt.up = Vector3(0,0,3);        //camera plane
 
-   rayt.frustum = Vector3(-17,0,0); //Set convergence point for perspective view
+   rayt.frustum = Vector3(-22,0,0); //Set convergence point for perspective view
 
    rayt.persp = true;   //View point in perspective
 
