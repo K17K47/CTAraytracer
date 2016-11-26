@@ -27,6 +27,7 @@
 int main(){
    Raytracer rayt;
 
+   //Load Reflective mesh data
    if(loadSTLModel(&rayt.model, "telescopeReflector.stl", SurfaceType::Reflective)){
       std::cout<<"Falha ao carregar modelo!"<<std::endl;
       return 255;
@@ -34,31 +35,38 @@ int main(){
 
    Model *model;
 
+   //Load Opaque mesh data
    if(loadSTLModel(&model, "telescopeBeams.stl", SurfaceType::Opaque)){
       std::cout<<"Falha ao carregar modelo!"<<std::endl;
       return 255;
    }
 
+   //Merge both meshes
    rayt.model->merge(model);
 
+   //Free memory allocated for already merged model
    delete model;
 
-   rayt.eye = Vector3(-16,0,0);
-   rayt.right = Vector3(0,-3,0);
-   rayt.up = Vector3(0,0,3);
-   rayt.frustum = Vector3(-17,0,0);
+   rayt.eye = Vector3(-16,0,0);     //Set camera position
 
-   rayt.persp = true;
+   rayt.right = Vector3(0,-3,0);    //Set basis for
+   rayt.up = Vector3(0,0,3);        //camera plane
 
-   rayt.resx = 1600;
+   rayt.frustum = Vector3(-17,0,0); //Set convergence point for perspective view
+
+   rayt.persp = true;   //View point in perspective
+
+   rayt.resx = 1600; //Set camera plane resolution
    rayt.resy = 1600;
 
-   rayt.run();
+   rayt.run(); //Run Raytracer and generate image
 
-   std::cout<<"P2\n";
-   std::cout<<rayt.resx<<" "<<rayt.resy<<"\n";
-   std::cout<<"255\n";
-   for(int yIdx=0; yIdx<rayt.resy; yIdx++){
+   //Export grayscale image in format .pgm
+   std::cout<<"P2\n";   //PGM magic number
+   std::cout<<rayt.resx<<" "<<rayt.resy<<"\n";  //Writes image resolution
+   std::cout<<"255\n";  //Max color value
+
+   for(int yIdx=0; yIdx<rayt.resy; yIdx++){  //Write image data to standard out
       for(int xIdx=0; xIdx<rayt.resx; xIdx++){
          std::cout<<rayt.img[xIdx*rayt.resy+yIdx]<<" ";
       }

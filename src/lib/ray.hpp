@@ -23,21 +23,21 @@
 #include"aux/math.hpp"
 #include"lib/model.hpp"
 
-struct RayTriangleColl{
-      real t;
-      Vector3 n;
-      SurfaceType attr;
-      int triangleIdx;
+struct RayTriangleColl{ //Ray-Triangle collision data
+      real t;  //Ray parameter for the collision
+      Vector3 n;  //Intersected triangle normal vector
+      SurfaceType attr; //Triangle optical caracteristic
+      int triangleIdx;  //Triangle index
 };
 
 
 class Ray{
    public:
-      Vector3 origin;
-      Vector3 dir;
+      Vector3 origin; //Ray origin
+      Vector3 dir;   //Ray direction vector
    public:
-      real intersectTriangle(Vector3 v[3]);
-      RayTriangleColl intersectModel(Model *model);
+      real intersectTriangle(Vector3 v[3]);  //Test ray collision with triangle
+      RayTriangleColl intersectModel(Model *model);//Test ray collision with mesh
 };
 
 #endif

@@ -21,12 +21,13 @@
 #include"lib/ray.hpp"
 
 void Raytracer::run(){
-   Vector3 n = up.cross(right);
+   Vector3 n = up.cross(right);  //Calculate camera plane normal
    n *= (1.0/n.norm());
 
-   Vector3 scrOrigin = -0.5*(right+up);
+   Vector3 scrOrigin = -0.5*(right+up);//Calculate screen origin on camera plane
 
-   img.reserve(resx*resy);
+   img.clear();
+   img.reserve(resx*resy); //Preallocate enough memory for the generated image
 
    Ray ray;
    RayTriangleColl coll, prevColl;
@@ -35,41 +36,56 @@ void Raytracer::run(){
 
    real t1, t2;
 
+   //Raytrace for each pixel in camera plane
    for(int x=0; x<resx; x++){
       for(int y=0; y<resy; y++){
-         t1 = (x*1.0)/(resx-1.0);
-         t2 = (y*1.0)/(resy-1.0);
+         t1 = (x*1.0)/(resx-1.0);   //Calculate camera plane parametrized
+         t2 = (y*1.0)/(resy-1.0);   //pixel coordinates
 
-         if(persp){
-            ray.dir = (eye+scrOrigin+t1*right+t2*up)-frustum;
-            ray.dir *= 1.0/ray.dir.norm();
-            ray.origin = frustum;
-         }else{
-            ray.origin = eye+scrOrigin+t1*right+t2*up;
-            ray.dir = n;
+         //Sets ray origin on pixel coordinate on camera plane
+         ray.origin = eye+scrOrigin+t1*right+t2*up;
+
+         if(persp){  //Calculate ray direction for perspective...
+            ray.dir = ray.origin-frustum; //Ray originates from focal point
+            ray.dir *= 1.0/ray.dir.norm();//behind camera plane
+         }else{   //...or orthogonal view
+            ray.dir = n; //Ray perpendicular to camera plane
          }
 
-         prevColl.attr = SurfaceType::None;
+         prevColl.attr = SurfaceType::None;//Clears last collision surf. attrib.
 
+         //TODO: Shoot multiple ray for each pixel, and average their color
          do{
+            //Shoot ray and test for intersection
             coll = ray.intersectModel(model);
+
+            //If ray hits reflective surface...
             if(coll.attr == SurfaceType::Reflective){
+               //..stores collision attributes...
                prevColl = coll;
                prevRayDir = ray.dir;
 
+               //...calculate secondary ray origin...
                ray.origin += coll.t * ray.dir;
 
+               //...and reflect ray direction vector in relation to surf. normal
                ray.dir -= 2.0*ray.dir.dot(coll.n)*coll.n;
                ray.dir *= 1.0/ray.dir.norm();
             }
+         //Exits when ray misses or hit opaque surface
          }while(coll.attr == SurfaceType::Reflective);
 
-         if(coll.attr == SurfaceType::Opaque) {
+         if(coll.attr == SurfaceType::Opaque){ //If ray hits opaque surface
+            //Give it a dark gray color(0-127), proportional
+            //to ray director projection over surface normal
             img.push_back(127*real_abs(ray.dir.dot(coll.n)));
          }else if(prevColl.attr == SurfaceType::Reflective){
+            //If ray reflects and misses, give it a light gray color(128-255),
+            //proportional to surface normal projection over ray director
+            //before the reflection
             img.push_back(128+127*real_abs(prevRayDir.dot(prevColl.n)));
-         }else{
-            img.push_back(255); //Background color
+         }else{ //If ray misses,
+            img.push_back(255); //his color will be the Background color(255)
          }
       }
    }

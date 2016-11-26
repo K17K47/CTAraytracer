@@ -26,13 +26,13 @@
 #include"lib/model.hpp"
 
 #pragma pack(1)
-struct STL_Header{
+struct STL_Header{   //STL 3D model, binary file header
    uint8_t header[80];
    uint32_t triangleCount;
 };
 
 #pragma pack(1)
-struct STL_Triangle{
+struct STL_Triangle{ //STL 3D model, binary triangle data format
    float normal[3];
    float vtx1[3];
    float vtx2[3];
@@ -40,6 +40,7 @@ struct STL_Triangle{
    uint16_t attr;
 };
 
+//Load STL file to Model. Returns 0 on success
 int loadSTLModel(Model **model, std::string path, SurfaceType attr);
 
 #endif

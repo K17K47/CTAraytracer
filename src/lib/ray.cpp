@@ -22,7 +22,8 @@
 
 #include"lib/ray.hpp"
 
-real Ray::intersectTriangle(Vector3 tri[3]){ //Möller-Trumbore Algorithm
+//Möller-Trumbore Algorith for ray-triangle intersection test
+real Ray::intersectTriangle(Vector3 tri[3]){
 
    Vector3 e1 = tri[1]-tri[0];
    Vector3 e2 = tri[2]-tri[0];
@@ -58,21 +59,26 @@ RayTriangleColl Ray::intersectModel(Model *model){
 
    coll.t = 0.0;
 
-   for(int i=0; i < model->triangles.size(); i++){
+   //TODO: Implement sub-linear collision testing with spatial subdivision
+   for(int i=0; i < model->triangles.size(); i++){ //For each triangle...
       for(int j=0; j < 3; j++) v[j]=model->vtx[model->triangles[i].v[j]];
-      t = intersectTriangle(v);
+
+      t = intersectTriangle(v);  //...test if is intersected by the ray
+
       if(t > 1e-6 && (t < coll.t || coll.t == 0.0)){
+         //Pick only the closest collisions with a tolerance of 1e-6
          coll.t = t;
          coll.triangleIdx = i;
       }
    }
 
-   if(coll.t > 0.0){
+   if(coll.t > 0.0){ //If collision ocurred...
+      //...copy normal and surface type to collision data structure
       coll.n = model->nor[model->triangles[coll.triangleIdx].n];
       coll.attr = model->triangles[coll.triangleIdx].type;
-   }else{
-      coll.t = -1.0;
-      coll.attr = SurfaceType::None;
+   }else{   //If there wasn't a collision,
+      coll.t = -1.0; //Give it a impossible ray parameter
+      coll.attr = SurfaceType::None;   //And a null surface type
    }
 
    return coll;

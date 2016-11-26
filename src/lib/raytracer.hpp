@@ -26,20 +26,20 @@
 class Raytracer{
    public:
       //EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-      Vector3 eye;
-      Vector3 up, right;
+      Vector3 eye;         //Camera plane position
+      Vector3 up, right;   //Camera plane basis
 
-      Vector3 frustum;
+      Vector3 frustum;  //Convergence point for a viewpoint in perspective
 
-      Model *model;
+      Model *model;  //Mesh to raytrace
 
-      unsigned resx, resy;
+      unsigned resx, resy; //Resolution of the generated image
 
-      std::vector<unsigned> img;
+      std::vector<unsigned> img; //Image data
 
-      bool persp;
+      bool persp; //Sets perspective(true) or orthogonal(false) view
    public:
-      void run();
+      void run(); //Raytrace and generate mesh image
 };
 
 #endif
