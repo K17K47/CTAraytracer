@@ -27,14 +27,14 @@
 int main(){
    Raytracer rayt;
 
-   if(loadSTLModel(&rayt.model, "telescopeReflector.stl", CollType::Reflective)){
+   if(loadSTLModel(&rayt.model, "telescopeReflector.stl", SurfaceType::Reflective)){
       std::cout<<"Falha ao carregar modelo!"<<std::endl;
       return 255;
    }
 
    Model *model;
 
-   if(loadSTLModel(&model, "telescopeBeams.stl", CollType::Opaque)){
+   if(loadSTLModel(&model, "telescopeBeams.stl", SurfaceType::Opaque)){
       std::cout<<"Falha ao carregar modelo!"<<std::endl;
       return 255;
    }
@@ -43,15 +43,15 @@ int main(){
 
    delete model;
 
-   rayt.eye = Vector3(16,0,0);
-   rayt.right = Vector3(0,3,0);
+   rayt.eye = Vector3(-16,0,0);
+   rayt.right = Vector3(0,-3,0);
    rayt.up = Vector3(0,0,3);
-   rayt.frustum = Vector3(17,0,0);
+   rayt.frustum = Vector3(-17,0,0);
 
    rayt.persp = true;
 
-   rayt.resx = 400;
-   rayt.resy = 400;
+   rayt.resx = 1600;
+   rayt.resy = 1600;
 
    rayt.run();
 

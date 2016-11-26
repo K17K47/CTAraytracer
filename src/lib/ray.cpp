@@ -72,10 +72,11 @@ RayTriangleColl Ray::intersectModel(Model *model){
       coll.attr = model->triangles[coll.triangleIdx].type;
    }else{
       coll.t = -1.0;
-      coll.attr = CollType::None;
+      coll.attr = SurfaceType::None;
    }
 
    return coll;
 }
 
 #endif
+

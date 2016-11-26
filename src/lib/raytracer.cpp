@@ -49,11 +49,11 @@ void Raytracer::run(){
             ray.dir = n;
          }
 
-         prevColl.attr = CollType::None;
+         prevColl.attr = SurfaceType::None;
 
          do{
             coll = ray.intersectModel(model);
-            if(coll.attr == CollType::Reflective){
+            if(coll.attr == SurfaceType::Reflective){
                prevColl = coll;
                prevRayDir = ray.dir;
 
@@ -62,11 +62,11 @@ void Raytracer::run(){
                ray.dir -= 2.0*ray.dir.dot(coll.n)*coll.n;
                ray.dir *= 1.0/ray.dir.norm();
             }
-         }while(coll.attr == CollType::Reflective);
+         }while(coll.attr == SurfaceType::Reflective);
 
-         if(coll.attr == CollType::Opaque) {
+         if(coll.attr == SurfaceType::Opaque) {
             img.push_back(127*real_abs(ray.dir.dot(coll.n)));
-         }else if(prevColl.attr == CollType::Reflective){
+         }else if(prevColl.attr == SurfaceType::Reflective){
             img.push_back(128+127*real_abs(prevRayDir.dot(prevColl.n)));
          }else{
             img.push_back(255); //Background color

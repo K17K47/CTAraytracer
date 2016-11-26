@@ -22,7 +22,7 @@
 
 #include"aux/math.hpp"
 
-enum CollType {
+enum SurfaceType{  //Define reflection attribute for triangles
    None = 0,
    Opaque = 1,
    Reflective = 2
@@ -31,21 +31,19 @@ enum CollType {
 struct Triangle{
    int v[3]; //Vertex index
    int n;   //Normal index
-   CollType type; //0-Opaque,1-Reflective,2-CCD
+   SurfaceType type; //Triangle surface caracteristic
 };
 
-class Model{
+class Model{ //Stores 3D Mesh data
    public:
-      std::vector<Vector3> vtx;
-      std::vector<Vector3> nor;
-      std::vector<Triangle> triangles;
+      std::vector<Vector3> vtx; //Vertex data
+      std::vector<Vector3> nor; //Surface normals data
+      std::vector<Triangle> triangles; //Triangles data
 
-      real minX, maxX;
-      real minY, maxY;
-      real minZ, maxZ;
+      Vector3 min, max; //Minimal Axis Aligned Boundary Box
 
    public:
-      void merge(Model *model);
+      void merge(Model *model); //Merge *model data
 };
 
 #endif

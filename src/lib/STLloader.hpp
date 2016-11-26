@@ -40,6 +40,6 @@ struct STL_Triangle{
    uint16_t attr;
 };
 
-int loadSTLModel(Model **model, std::string path, CollType attr);
+int loadSTLModel(Model **model, std::string path, SurfaceType attr);
 
 #endif

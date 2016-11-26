@@ -20,24 +20,27 @@
 #include"lib/model.hpp"
 
 void Model::merge(Model *model){
+   //Merge vertex data
    int vOldSize = vtx.size();
    vtx.insert(vtx.end(), model->vtx.begin(), model->vtx.end());
+
+   //Merge normals data
    int nOldSize = nor.size();
    nor.insert(nor.end(), model->nor.begin(), model->nor.end());
+
+   //Merge triangles data
    int tOldSize = triangles.size();
    triangles.insert(triangles.end(), model->triangles.begin(), model->triangles.end());
 
+   //Offsets Vertex and Normal indexes on triangles from merged model
+   //TODO: Test for duplicated vertexes and normals, lowering memory use
    for(int i=tOldSize; i<triangles.size(); i++){
       for(int j=0; j<3; j++) triangles[i].v[j]+=vOldSize;
       triangles[i].n = nOldSize;
    }
 
-   if(minX > model->minX) minX = model->minX;
-   if(maxX < model->maxX) maxX = model->maxX;
-
-   if(minY > model->minY) minY = model->minY;
-   if(maxY < model->maxY) maxY = model->maxY;
-
-   if(minZ > model->minZ) minZ = model->minZ;
-   if(maxZ < model->maxZ) maxZ = model->maxZ;
+   for(int i=0; i < 3; i++){
+      if(min[i] > model->min[i]) min[i] = model->min[i];
+      if(max[i] < model->max[i]) max[i] = model->max[i];
+   }
 }
