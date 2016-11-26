@@ -47,17 +47,17 @@ int main(){
    //Free memory allocated for already merged model
    delete model;
 
-   rayt.eye = Vector3(-16,0,0);     //Set camera position
+   rayt.eye = Vector3(16,0,0);     //Set camera position
 
-   rayt.right = Vector3(0,-3,0);    //Set basis for
+   rayt.right = Vector3(0,3,0);    //Set basis for
    rayt.up = Vector3(0,0,3);        //camera plane
 
-   rayt.frustum = Vector3(-22,0,0); //Set convergence point for perspective view
+   rayt.frustum = Vector3(22,0,0); //Set convergence point for perspective view
 
    rayt.persp = true;   //View point in perspective
 
-   rayt.resx = 1600; //Set camera plane resolution
-   rayt.resy = 1600;
+   rayt.resx = 400; //Set camera plane resolution
+   rayt.resy = 400;
 
    rayt.run(); //Run Raytracer and generate image
 

@@ -1,2 +1,2 @@
 #!/bin/sh
-basicRaytracing > ./result.pgm
+basicRaytracing > ./telescope.pgm
