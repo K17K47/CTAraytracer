@@ -1,2 +1,2 @@
 #!/bin/sh
-basicRaytracing > ./telescope.pgm
+LD_LIBRARY_PATH=../ ./basicRaytracing > ./telescope.pgm
