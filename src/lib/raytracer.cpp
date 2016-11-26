@@ -41,7 +41,7 @@ void Raytracer::run(){
          t2 = (y*1.0)/(resy-1.0);
 
          if(persp){
-            ray.dir = frustum-(eye+scrOrigin+t1*right+t2*up);
+            ray.dir = (eye+scrOrigin+t1*right+t2*up)-frustum;
             ray.dir *= 1.0/ray.dir.norm();
             ray.origin = frustum;
          }else{
@@ -59,7 +59,7 @@ void Raytracer::run(){
 
                ray.origin += coll.t * ray.dir;
 
-               ray.dir += 2.0*ray.dir.dot(coll.n)*coll.n;
+               ray.dir -= 2.0*ray.dir.dot(coll.n)*coll.n;
                ray.dir *= 1.0/ray.dir.norm();
             }
          }while(coll.attr == CollType::Reflective);
