@@ -59,12 +59,12 @@ int main(){
 	rayt.persp = false;   //Orthogonal projection
    rayt.generateImg = false;   //Don't generate ray hit bitmap
 
-   rayt.resx = 130; //Camera plane resolution
-   rayt.resy = 130;
+   rayt.resx = 75; //Camera plane resolution
+   rayt.resy = 75;
 
-	real angle = 0.20943951; //[rad]
-	real initialAngle = -0.104719755; //[rad]
-	unsigned nSamples = 4;
+	real angle = 0.21; //[rad]
+	real initialAngle = -0.105; //[rad]
+	unsigned nSamples = 25;
 
 	Matrix33 r;
 
@@ -79,10 +79,8 @@ int main(){
    	rayt.frustum = Vector3(0,0,0); //Set convergence point for perspective view
 		rayt.run(); //Run Raytracer and generate image
 
-		std::cout<<(100.0*rayt.rayHitCount[SurfaceType::Sensor])/(1.0*(rayt.rayHitCount[SurfaceType::Opaque]+rayt.rayHitCount[SurfaceType::Reflective]+rayt.rayHitCount[SurfaceType::Sensor]))<<"% ";
+		std::cout<<(100.0*rayt.rayHitCount[SurfaceType::Sensor])/(1.0*(rayt.rayHitCount[SurfaceType::Opaque]+rayt.rayHitCount[SurfaceType::Reflective]+rayt.rayHitCount[SurfaceType::Sensor]))<<"\n";
 	}
-
-	std::cout<<"\n";
 
    return 0;
 }
