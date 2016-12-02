@@ -33,6 +33,8 @@ void Raytracer::run(){
       img.reserve(nRays); //Preallocate enough memory for the generated image
    }
 
+   for(int i = 0; i < 4; i++) rayHitCount[i] = 0;
+
    Ray ray;
    RayTriangleColl coll, prevColl;
 
@@ -80,7 +82,11 @@ void Raytracer::run(){
          }while(coll.attr == SurfaceType::Reflective);
 
          //Ray statistics
-         rayHitCount[coll.attr]++;
+         if(coll.attr == SurfaceType::None && prevColl.attr == Reflective){
+            rayHitCount[SurfaceType::Reflective]++;
+         }else{
+            rayHitCount[coll.attr]++;
+         }
 
          if(generateImg){
             if(coll.attr == SurfaceType::Opaque){ //If ray hits opaque surface
