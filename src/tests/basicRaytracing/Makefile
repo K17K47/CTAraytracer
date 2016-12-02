@@ -1,6 +1,6 @@
 .PHONY: all, clean
 
-TEST1 := basicRaytracing
+TEST := basicRaytracing
 
 CPPFLAGS := -I../../
 CFLAGS :=
@@ -11,9 +11,9 @@ SOURCES = $(wildcard *.cpp)
 HEADERS = $(wildcard %.hpp)
 OBJECTS = $(SOURCES:%.cpp=%.o)
 
-all : $(TEST1)
+all : $(TEST)
 
-$(TEST1) : $(OBJECTS) Makefile
+$(TEST) : $(OBJECTS) Makefile
 	$(CXX) -o $@ $(LDFLAGS) $(OBJECTS)
 
 %.o: %.cpp $(HEADERS) Makefile
@@ -21,4 +21,4 @@ $(TEST1) : $(OBJECTS) Makefile
 
 clean:
 	@echo "Clean."
-	-rm -f $(OBJECTS) $(TEST1)
+	-rm -f $(OBJECTS) $(TEST)
