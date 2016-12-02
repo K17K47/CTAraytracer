@@ -1,24 +1,14 @@
-.PHONY: all, clean
+.PHONY: all clean basicRaytracing telescopeOcclusion
 
-TESTS := basicRaytracing
+all : basicRaytracing telescopeOcclusion
 
-CPPFLAGS := -I../ -L../
-CFLAGS :=
-CXXFLAGS += -fPIC -std=c++11
-LDFLAGS += -L../ -pthread -lRaytrace
+basicRaytracing:
+	cd basicRaytracing && $(MAKE)
 
-SOURCES = $(wildcard *.cpp)
-HEADERS = $(wildcard %.hpp)
-OBJECTS = $(SOURCES:%.cpp=%.o)
-
-all : $(TESTS)
-
-$(TESTS) : $(OBJECTS) Makefile
-	$(CXX) -o $@ $(LDFLAGS) $(OBJECTS)
-
-%.o: %.cpp $(HEADERS) Makefile
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(OUTPUT_OPTION) $<
+telescopeOcclusion:
+	cd telescopeOcclusion && $(MAKE)
 
 clean:
 	@echo "Clean."
-	-rm -f $(OBJECTS) $(TESTS)
+	cd basicRaytracing && $(MAKE) clean
+	cd telescopeOcclusion && $(MAKE) clean

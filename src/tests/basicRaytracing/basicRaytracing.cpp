@@ -55,6 +55,7 @@ int main(){
    rayt.frustum = Vector3(20,0,0); //Set convergence point for perspective view
 
    rayt.persp = true;   //View point in perspective
+   rayt.generateImg = true;   //Generate ray hit bitmap
 
    rayt.resx = 400; //Set camera plane resolution
    rayt.resy = 400;
