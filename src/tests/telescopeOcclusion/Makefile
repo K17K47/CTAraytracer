@@ -1,6 +1,6 @@
 .PHONY: all, clean
 
-TEST := basicRaytracing
+TEST := telescopeOcclusion
 
 CPPFLAGS := -I../../
 CFLAGS :=

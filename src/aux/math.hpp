@@ -73,6 +73,6 @@ typedef Eigen::Matrix<real, 4, 4, 0, 4, 4> Matrix44;
 typedef Eigen::Quaternion<real> Quaternion;
 typedef Eigen::AngleAxis<real> AngleAxis;
 typedef Eigen::Translation<real, 3> Translation3;
-typedef Eigen::Transform<real, 3> Transform;
+typedef Eigen::Transform<real, 3, Eigen::TransformTraits::Projective> Transform;
 
 #endif

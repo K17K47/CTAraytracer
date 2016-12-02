@@ -66,12 +66,12 @@ int main(){
 	real initialAngle = -0.104719755; //[rad]
 	unsigned nSamples = 4;
 
-	Transform r;
+	Matrix33 r;
 
 	for(int i=0; i<nSamples; i++){
 		r = AngleAxis(initialAngle+angle*((1.0*i)/(nSamples-1.0)),Vector3(0,1,0));
 
-   	rayt.eye = r*Vector3(25,0,0);     //Set camera position
+    	rayt.eye = r*Vector3(25,0,0);     //Set camera position
 
    	rayt.right = r*Vector3(0,13,0);    //Set basis for
    	rayt.up = r*Vector3(0,0,13);        //camera plane
