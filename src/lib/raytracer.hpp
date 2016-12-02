@@ -38,6 +38,9 @@ class Raytracer{
       std::vector<unsigned> img; //Image data
 
       bool persp; //Sets perspective(true) or orthogonal(false) view
+      bool generateImg; //If true, generate a image
+
+      unsigned rayHitCount[4]; //Count how many rays missed, reflected or hit
    public:
       void run(); //Raytrace and generate mesh image
 };

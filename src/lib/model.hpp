@@ -25,7 +25,8 @@
 enum SurfaceType{  //Define reflection attribute for triangles
    None = 0,
    Opaque = 1,
-   Reflective = 2
+   Reflective = 2,
+   Sensor = 3
 };
 
 struct Triangle{

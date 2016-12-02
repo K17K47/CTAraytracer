@@ -66,7 +66,7 @@ RayTriangleColl Ray::intersectModel(Model *model){
       t = intersectTriangle(v);  //...test if is intersected by the ray
 
       if(t > 1e-6 && (t < coll.t || coll.t == 0.0)){
-         //Pick only the closest collisions with a tolerance of 1e-6
+         //Pick only the closest collisions, with a tolerance of 1e-6
          coll.t = t;
          coll.triangleIdx = i;
       }

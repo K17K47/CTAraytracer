@@ -26,8 +26,12 @@ void Raytracer::run(){
 
    Vector3 scrOrigin = -0.5*(right+up);//Calculate screen origin on camera plane
 
-   img.clear();
-   img.reserve(resx*resy); //Preallocate enough memory for the generated image
+   unsigned nRays = resx*resy;
+
+   if(generateImg){
+      img.clear();
+      img.reserve(nRays); //Preallocate enough memory for the generated image
+   }
 
    Ray ray;
    RayTriangleColl coll, prevColl;
@@ -75,17 +79,22 @@ void Raytracer::run(){
          //Exits when ray misses or hit opaque surface
          }while(coll.attr == SurfaceType::Reflective);
 
-         if(coll.attr == SurfaceType::Opaque){ //If ray hits opaque surface
-            //Give it a dark gray color(0-127), proportional
-            //to ray director projection over surface normal
-            img.push_back(127*real_abs(ray.dir.dot(coll.n)));
-         }else if(prevColl.attr == SurfaceType::Reflective){
-            //If ray reflects and misses, give it a light gray color(128-255),
-            //proportional to surface normal projection over ray director
-            //before the reflection
-            img.push_back(128+127*real_abs(prevRayDir.dot(prevColl.n)));
-         }else{ //If ray misses,
-            img.push_back(255); //his color will be the Background color(255)
+         //Ray statistics
+         rayHitCount[coll.attr]++;
+
+         if(generateImg){
+            if(coll.attr == SurfaceType::Opaque){ //If ray hits opaque surface
+               //Give it a dark gray color(0-127), proportional
+               //to ray director projection over surface normal
+               img.push_back(127*real_abs(ray.dir.dot(coll.n)));
+            }else if(prevColl.attr == SurfaceType::Reflective){
+               //If ray reflects and misses, give it a light gray color(128-255),
+               //proportional to surface normal projection over ray director
+               //before the reflection
+               img.push_back(128+127*real_abs(prevRayDir.dot(prevColl.n)));
+            }else{ //If ray misses,
+               img.push_back(255); //his color will be the Background color(255)
+            }
          }
       }
    }
