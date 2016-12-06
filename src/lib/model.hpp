@@ -41,7 +41,8 @@ class Model{ //Stores 3D Mesh data
       std::vector<Vector3> nor; //Surface normals data
       std::vector<Triangle> triangles; //Triangles data
 
-      Vector3 min, max; //Minimal Axis Aligned Boundary Box
+      Vector3 min;
+      Vector3 max; //Minimal Axis Aligned Boundary Box
 
    public:
       void merge(Model *model); //Merge *model data

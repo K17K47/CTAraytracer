@@ -84,5 +84,115 @@ RayTriangleColl Ray::intersectModel(Model *model){
    return coll;
 }
 
+int Ray::firstNode(Vector3 t0, Vector3 tm){
+   int tMax = t0.maxCoeff();
+
+   //Testa qual o primeiro plano intersectado pelo raio
+   if(tMax == t0[0]){ //Plano YZ
+      return (tm[1]<t0[0])*2+(tm[2]<t0[0])*4;
+   } else if(tMax == t0[1]){ //Plano XZ
+      return (tm[0]<t0[1])*1+(tm[2]<t0[1])*4;
+   } else{ //Plano XY
+      return (tm[0]<t0[2])*1+(tm[1]<t0[2])*2;
+   }
+   return 8;
+}
+
+int Ray::newNode(Vector3 t, Vector3 v){
+   real tMin = t[0];
+   int j=0;
+   for(int i=1; i<3; i++){
+      if(t[i]<tMin){
+         tMin = t[i];
+         j = i;
+      }
+   }
+
+   return v[j];
+}
+
+void Ray::procSubtree(Vector3 t0, Vector3 t1, OctreeNode* node, std::vector<OctreeLeaf*>* colisions){
+   if(node == nullptr) return;
+
+   Vector3 tm;
+
+   int currNode;
+
+   if(t1[0] < 0.0 || t1[1] < 0.0 || t1[2] < 0.0)
+      return;
+
+   if(node->isLeaf()){
+      colisions->push_back(dynamic_cast<OctreeLeaf*>(node));
+      return;
+   }
+
+   tm=0.5*(t0+t1);
+
+   currNode = firstNode(t0,tm);
+
+   do{
+      switch(currNode){
+         case 0:
+            procSubtree(t0,tm, dynamic_cast<OctreeBranch*>(node)->children[0], colisions);
+            currNode = newNode(tm, Vector3(4, 2, 1));//newNode(tm[0], 4, tm[1], 2, tm[2], 1);
+            break;
+         case 1:
+            procSubtree(Vector3(t0[0], t0[1], tm[2]), Vector3(tm[0], tm[1], t1[2]), dynamic_cast<OctreeBranch*>(node)->children[1], colisions);
+            currNode = newNode(Vector3(tm[0], tm[1], t1[2]), Vector3(5, 3, 8));//newNode(tm[0], 5, tm[1], 3, t1[2], 8);
+            break;
+         case 2:
+            procSubtree(Vector3(t0[0], tm[1], t0[2]), Vector3(tm[0], t1[1], tm[2]), dynamic_cast<OctreeBranch*>(node)->children[2], colisions);
+            currNode = newNode(Vector3(tm[0], t1[1], tm[2]), Vector3(6, 8, 3));//newNode(tm[0], 6, t1[1], 8, tm[2], 3);
+            break;
+         case 3:
+            procSubtree(Vector3(t0[0], tm[1], tm[2]), Vector3(tm[0], t1[1], t1[2]), dynamic_cast<OctreeBranch*>(node)->children[3], colisions);
+            currNode = newNode(Vector3(tm[0], t1[1], t1[2]), Vector3(7, 8, 8));//newNode(tm[0], 7, t1[1], 8, t1[2], 8);
+            break;
+         case 4:
+            procSubtree(Vector3(tm[0], t0[1], t0[2]), Vector3(t1[0], tm[1], tm[2]), dynamic_cast<OctreeBranch*>(node)->children[4], colisions);
+            currNode = newNode(Vector3(t1[0], tm[1], tm[2]), Vector3(8, 6, 5));//newNode(t1[0], 8, tm[1], 6, tm[2], 5);
+            break;
+         case 5:
+            procSubtree(Vector3(tm[0], t0[1], tm[2]), Vector3(t1[0], tm[1], t1[2]), dynamic_cast<OctreeBranch*>(node)->children[5], colisions);
+            currNode = newNode(Vector3(t1[0], tm[1], t1[2]), Vector3(8, 7, 8));//newNode(t1[0], 8, tm[1], 7, t1[2], 8);
+            break;
+         case 6:
+            procSubtree(Vector3(tm[0], tm[1], t0[2]), Vector3(t1[0], t1[2], tm[2]), dynamic_cast<OctreeBranch*>(node)->children[6], colisions);
+            currNode = newNode(Vector3(t1[0], t1[1], tm[2]), Vector3(8, 8, 7));//newNode(t1[0], 8, t1[1], 8, tm[2], 7);
+            break;
+         case 7:
+            procSubtree(tm, t1, dynamic_cast<OctreeBranch*>(node)->children[7], colisions);
+            currNode = 8;
+            break;
+      }
+   }while(currNode<8);
+}
+
+void Ray::rayParameter(Octree *oct, std::vector<OctreeLeaf*> *colisions){
+   Vector3 t0;
+   Vector3 t1;
+
+   Vector3 pivot = oct->root->aabb.center;
+   Vector3 size = oct->root->aabb.halfwidth;
+
+   real tmp;
+
+   for(int i=0; i<3; i++){
+      tmp = pivot[i]-origin[i];
+
+      t0[i]=(tmp-size[i])/dir[i];
+      t1[i]=(tmp+size[i])/dir[i];
+   }
+
+   if(t1.minCoeff() > t0.maxCoeff())
+      procSubtree(t0,t1, oct->root, colisions);
+}
+
+int Ray::intersectOctree(Octree *octree, std::vector<OctreeLeaf*> *colisions){
+   colisions->clear();
+   rayParameter(octree, colisions);
+   return 0;
+}
+
 #endif
 

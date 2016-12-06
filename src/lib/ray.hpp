@@ -21,7 +21,9 @@
 #define RAY_HPP_
 
 #include"aux/math.hpp"
+
 #include"lib/model.hpp"
+#include"lib/octree.hpp"
 
 struct RayTriangleColl{ //Ray-Triangle collision data
       real t;  //Ray parameter for the collision
@@ -35,9 +37,17 @@ class Ray{
    public:
       Vector3 origin; //Ray origin
       Vector3 dir;   //Ray direction vector
+
    public:
       real intersectTriangle(Vector3 v[3]);  //Test ray collision with triangle
       RayTriangleColl intersectModel(Model *model);//Test ray collision with mesh
+      int intersectOctree(Octree *octree, std::vector<OctreeLeaf*> *colisions);
+
+   private:
+      int firstNode(Vector3 t0, Vector3 tm);
+      int newNode(Vector3 t, Vector3 v);
+      void procSubtree(Vector3 t0, Vector3 t1, OctreeNode* node, std::vector<OctreeLeaf*> *colisions);
+      void rayParameter(Octree *oct, std::vector<OctreeLeaf*> *colisions);
 };
 
 #endif
