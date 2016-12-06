@@ -95,7 +95,8 @@ int loadSTLModel(Model **model, std::string path, SurfaceType attr){
             //And push it on end of triangles vector
             (*model)->triangles.push_back(tri);
       }
+      return 0;
    }
 
-   return 0;
+   return 1;
 }
