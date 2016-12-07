@@ -41,7 +41,7 @@ int main(){
 
    std::cout<<model->max<<"\n";
 
-   aabb.halfwidth = model->max;
+   aabb.halfsize = model->max;
 
    Octree oct(aabb);
 
