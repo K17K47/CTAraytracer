@@ -75,4 +75,7 @@ typedef Eigen::AngleAxis<real> AngleAxis;
 typedef Eigen::Translation<real, 3> Translation3;
 typedef Eigen::Transform<real, 3, Eigen::TransformTraits::Projective> Transform;
 
+#define min(x, y) ((x) < (y) ? (x) : (y))
+#define max(x, y) ((x) > (y) ? (x) : (y))
+
 #endif
