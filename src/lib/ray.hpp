@@ -21,6 +21,7 @@
 #define RAY_HPP_
 
 #include"aux/math.hpp"
+#include"aux/aabb.hpp"
 
 #include"lib/model.hpp"
 #include"lib/octree.hpp"
@@ -40,14 +41,13 @@ class Ray{
 
    public:
       real intersectTriangle(Vector3 v[3]);  //Test ray collision with triangle
-      RayTriangleColl intersectModel(Model *model);//Test ray collision with mesh
-      int intersectOctree(Octree *octree, std::vector<OctreeLeaf*> *colisions);
+      RayTriangleColl intersectModelLinear(Model *model);//Test ray collision with mesh
+		RayTriangleColl intersectModelOctree(Octree *oct, Model *model);
+      int intersectOctree(Octree *octree, std::vector<OctreeLeaf*> *collisions);
+      bool intersectAABB(AABB b);
 
    private:
-      int firstNode(Vector3 t0, Vector3 tm);
-      int newNode(Vector3 t, Vector3 v);
-      void procSubtree(Vector3 t0, Vector3 t1, OctreeNode* node, std::vector<OctreeLeaf*> *colisions);
-      void rayParameter(Octree *oct, std::vector<OctreeLeaf*> *colisions);
+      int intersectOctreeSub(OctreeNode *node, std::vector<OctreeLeaf*> *collisions);
 };
 
 #endif
