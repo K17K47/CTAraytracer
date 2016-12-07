@@ -42,6 +42,10 @@ void Raytracer::run(){
 
    real t1, t2;
 
+   Octree oct(AABB(Vector3(0,0,0), model->max));
+
+   oct.build(&model->triangles, model);
+
    //Raytrace for each pixel in camera plane
    for(int x=0; x<resx; x++){
       for(int y=0; y<resy; y++){
@@ -63,7 +67,7 @@ void Raytracer::run(){
          //TODO: Shoot multiple ray for each pixel, and average their color
          do{
             //Shoot ray and test for intersection
-            coll = ray.intersectModel(model);
+            coll = ray.intersectModelOctree(&oct, model);
 
             //If ray hits reflective surface...
             if(coll.attr == SurfaceType::Reflective){
