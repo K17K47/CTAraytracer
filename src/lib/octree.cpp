@@ -17,7 +17,7 @@
 *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#define DEPTH 4
+#define DEPTH 10
 #include"lib/octree.hpp"
 
 Octree::Octree(AABB box){
@@ -51,7 +51,7 @@ int OctreeBranch::insert(std::vector<Triangle> *tri, Model *model){
    std::vector<AABB> aabbs;
 
    for(int i = 0; i < tri->size(); i++){
-         for(int i = 0; i < 3; i++) v[i] = model->vtx[(*tri)[i].v[i]];
+         for(int j = 0; j < 3; j++) v[j] = model->vtx[(*tri)[i].v[j]];
 
          aabbs.push_back(minimumTriangleAABB(v));
    }
@@ -66,9 +66,9 @@ unsigned OctreeBranch::locate(Vector3 pos){
 
    Vector3 tmp = aabb.center - pos;
 
-   if((real_abs(tmp[0]) > aabb.halfwidth[0]) ||
-      (real_abs(tmp[1]) > aabb.halfwidth[1]) ||
-      (real_abs(tmp[2]) > aabb.halfwidth[2])){
+   if((real_abs(tmp[0]) > aabb.halfsize[0]) ||
+      (real_abs(tmp[1]) > aabb.halfsize[1]) ||
+      (real_abs(tmp[2]) > aabb.halfsize[2])){
       return 8;
    }
 
@@ -84,8 +84,8 @@ unsigned OctreeBranch::locate(Vector3 pos){
 
 AABB OctreeBranch::childrenAABB(unsigned idx){
    AABB tmp;
-   tmp.halfwidth = 0.5*aabb.halfwidth;
-   tmp.center = tmp.halfwidth;
+   tmp.halfsize = 0.5*aabb.halfsize;
+   tmp.center = tmp.halfsize;
 
    //x
    if(idx & 1) tmp.center[0] *= -1;
