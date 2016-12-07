@@ -24,13 +24,13 @@
 
 struct AABB{
    Vector3 center;
-   Vector3 halfwidth;
+   Vector3 halfsize;
 
-   AABB() : center(Vector3(0,0,0)), halfwidth(Vector3(0,0,0)) {}
+   AABB() : center(Vector3(0,0,0)), halfsize(Vector3(0,0,0)) {}
 
    AABB(const Vector3 &centro, const Vector3 &dimensoes)
       : center(centro),
-        halfwidth(dimensoes) {}
+        halfsize(dimensoes) {}
 
    bool intersectAABB(const AABB &box);
 };
