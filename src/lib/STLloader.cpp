@@ -91,6 +91,7 @@ int loadSTLModel(Model **model, std::string path, SurfaceType attr){
             for(int j=0; j<3; j++) tri.v[j] = i*3+j;
             tri.n = i;
             tri.type = attr;
+            tri.triangleIdx = i;
 
             //And push it on end of triangles vector
             (*model)->triangles.push_back(tri);
