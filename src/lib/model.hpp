@@ -33,6 +33,7 @@ struct Triangle{
    int v[3]; //Vertex index
    int n;   //Normal index
    SurfaceType type; //Triangle surface caracteristic
+   int triangleIdx;
 };
 
 class Model{ //Stores 3D Mesh data

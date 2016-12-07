@@ -37,6 +37,7 @@ void Model::merge(Model *model){
    for(int i=tOldSize; i<triangles.size(); i++){
       for(int j=0; j<3; j++) triangles[i].v[j]+=vOldSize;
       triangles[i].n = nOldSize;
+      triangles[i].triangleIdx+=nOldSize;
    }
 
    for(int i=0; i < 3; i++){
