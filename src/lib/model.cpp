@@ -36,8 +36,8 @@ void Model::merge(Model *model){
    //TODO: Test for duplicated vertexes and normals, lowering memory use
    for(int i=tOldSize; i<triangles.size(); i++){
       for(int j=0; j<3; j++) triangles[i].v[j]+=vOldSize;
-      triangles[i].n = nOldSize;
-      triangles[i].triangleIdx+=nOldSize;
+      triangles[i].n += nOldSize;
+      triangles[i].triangleIdx = i;
    }
 
    for(int i=0; i < 3; i++){
