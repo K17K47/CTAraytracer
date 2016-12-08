@@ -62,14 +62,16 @@ int main(){
    rayt.resx = 75; //Camera plane resolution
    rayt.resy = 75;
 
-	real angle = 0.21; //[rad]
-	real initialAngle = -0.105; //[rad]
+	real arc = 0.21; //[rad]
+	real angle = -0.105; //[rad]
 	unsigned nSamples = 25;
+
+   real angleStep = arc/(nSamples-1.0);
 
 	Matrix33 r;
 
 	for(int i=0; i<nSamples; i++){
-		r = AngleAxis(initialAngle+angle*((1.0*i)/(nSamples-1.0)),Vector3(0,1,0));
+		r = AngleAxis(angle,Vector3(0,1,0));
 
     	rayt.eye = r*Vector3(25,0,0);     //Set camera position
 
@@ -79,7 +81,10 @@ int main(){
    	rayt.frustum = Vector3(0,0,0); //Set convergence point for perspective view
 		rayt.run(); //Run Raytracer and generate image
 
+      std::cout<<angle<<", ";
 		std::cout<<(100.0*rayt.rayHitCount[SurfaceType::Sensor])/(1.0*(rayt.rayHitCount[SurfaceType::Opaque]+rayt.rayHitCount[SurfaceType::Reflective]+rayt.rayHitCount[SurfaceType::Sensor]))<<"\n";
+
+      angle += angleStep;
 	}
 
    return 0;
