@@ -18,6 +18,9 @@
 */
 
 #include<iostream>
+#include<fstream>
+
+#include<chrono>
 
 #include"lib/model.hpp"
 #include"lib/ray.hpp"
@@ -47,6 +50,12 @@ int main(){
    //Free memory allocated for already merged model
    delete model;
 
+   //Open output file
+   std::filebuf fb;
+   fb.open("image.pgm", std::ios::out);
+
+   std::ostream os(&fb);
+
    rayt.eye = Vector3(16,0,0);     //Set camera position
 
    rayt.right = Vector3(0,3,0);    //Set basis for
@@ -60,19 +69,26 @@ int main(){
    rayt.resx = 400; //Set camera plane resolution
    rayt.resy = 400;
 
+   std::chrono::time_point<std::chrono::steady_clock> start=std::chrono::steady_clock::now();
+
    rayt.run(); //Run Raytracer and generate image
 
+   std::chrono::duration<real> t=std::chrono::steady_clock::now()-start;
+   std::cout<<rayt.resx*rayt.resy<<" rays in "<<t.count()<<" seconds"<<std::endl;
+
    //Export grayscale image in format .pgm
-   std::cout<<"P2\n";   //PGM magic number
-   std::cout<<rayt.resx<<" "<<rayt.resy<<"\n";  //Writes image resolution
-   std::cout<<"255\n";  //Max color value
+   os<<"P2\n";   //PGM magic number
+   os<<rayt.resx<<" "<<rayt.resy<<"\n";  //Writes image resolution
+   os<<"255\n";  //Max color value
 
    for(int yIdx=0; yIdx<rayt.resy; yIdx++){  //Write image data to standard out
       for(int xIdx=0; xIdx<rayt.resx; xIdx++){
-         std::cout<<rayt.img[xIdx*rayt.resy+yIdx]<<" ";
+         os<<rayt.img[xIdx*rayt.resy+yIdx]<<" ";
       }
-      std::cout<<"\n";
+      os<<"\n";
    }
+
+   fb.close();
 
    return 0;
 }
