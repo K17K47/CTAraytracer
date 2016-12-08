@@ -42,13 +42,11 @@ AABB minimumTriangleAABB(Vector3 v[3]){
    v[1] -= triAABB.center;
    v[2] -= triAABB.center;
 
-   Vector3 halfsize;
-
-   for(int i = 0; i < 3; i++) halfsize[i] = real_abs(v[0][i]);
+   Vector3 halfsize = Vector3(1e-3,1e-3,1e-3);
 
    real tmp;
 
-   for(int i = 1; i < 3; i++){
+   for(int i = 0; i < 3; i++){
       for(int j = 0; j < 3; j++){
          tmp = real_abs(v[i][j]);
          if(halfsize[j] < tmp) halfsize[j] = tmp;
