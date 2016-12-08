@@ -107,31 +107,27 @@ RayTriangleColl Ray::intersectModelLinear(Model *model){
 RayTriangleColl Ray::intersectModelOctree(Octree *oct, Model *model){
    RayTriangleColl coll;
 
-   std::vector<OctreeLeaf*> colisions;
+   std::vector<OctreeLeaf*> collisions(20);
 
-   intersectOctree(oct, &colisions);
-
-   if(colisions.empty()){
-      coll.t = -1.0;
-      coll.attr = SurfaceType::None;
-      return coll;
-   }
+   intersectOctree(oct, &collisions);
 
    real t = 0.0;
    Vector3 v[3];
 
    coll.t = 0.0;
 
-   for(int i = 0; i < colisions.size(); i++){
-      for(int j=0; j < colisions[i]->obj.size(); j++){ //For each triangle...
-         for(int k=0; k < 3; k++) v[k]=model->vtx[colisions[i]->obj[j].v[k]];
+   if(!collisions.empty()){
+      for(int i = 0; i < collisions.size(); i++){
+         for(int j=0; j < collisions[i]->obj.size(); j++){ //For each triangle...
+            for(int k=0; k < 3; k++) v[k]=model->vtx[collisions[i]->obj[j].v[k]];
 
-         t = intersectTriangle(v);  //...test if is intersected by the ray
+            t = intersectTriangle(v);  //...test if is intersected by the ray
 
-         if(t > 1e-6 && (t < coll.t || coll.t == 0.0)){
-            //Pick only the closest collisions, with a tolerance of 1e-6
-            coll.t = t;
-            coll.triangleIdx = colisions[i]->obj[j].triangleIdx;
+            if(t > 1e-6 && (t < coll.t || coll.t == 0.0)){
+               //Pick only the closest collisions, with a tolerance of 1e-6
+               coll.t = t;
+               coll.triangleIdx = collisions[i]->obj[j].triangleIdx;
+            }
          }
       }
    }
@@ -159,7 +155,7 @@ int Ray::intersectOctreeSub(OctreeNode *node, std::vector<OctreeLeaf*> *collisio
 
    if(intersectAABB(node->aabb)){
       if(node->isLeaf()){
-         collisions->push_back(dynamic_cast<OctreeLeaf*>(node));
+         if(!dynamic_cast<OctreeLeaf*>(node)->obj.empty()) collisions->push_back(dynamic_cast<OctreeLeaf*>(node));
          return 0;
       }else{
          for(int i = 0; i < 8; i++){

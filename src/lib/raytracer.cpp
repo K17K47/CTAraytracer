@@ -26,11 +26,11 @@ void Raytracer::run(){
 
    Vector3 scrOrigin = -0.5*(right+up);//Calculate screen origin on camera plane
 
-   unsigned nRays = resx*resy;
+   Vector3 cameraOrigin = scrOrigin + eye;
 
    if(generateImg){
       img.clear();
-      img.reserve(nRays); //Preallocate enough memory for the generated image
+      img.reserve(resx*resy); //Preallocate enough memory for the generated image
    }
 
    for(int i = 0; i < 4; i++) rayHitCount[i] = 0;
@@ -46,14 +46,17 @@ void Raytracer::run(){
 
    oct.build(&model->triangles, model);
 
+   real inv_ResX = 1.0/(resx-1.0);
+   real inv_ResY = 1.0/(resy-1.0);
+
    //Raytrace for each pixel in camera plane
    for(int x=0; x<resx; x++){
       for(int y=0; y<resy; y++){
-         t1 = (x*1.0)/(resx-1.0);   //Calculate camera plane parametrized
-         t2 = (y*1.0)/(resy-1.0);   //pixel coordinates
+         t1 = x*inv_ResX;   //Calculate camera plane parametrized
+         t2 = y*inv_ResY;   //pixel coordinates
 
          //Sets ray origin on pixel coordinate on camera plane
-         ray.origin = eye+scrOrigin+t1*right+t2*up;
+         ray.origin = cameraOrigin+t1*right+t2*up;
 
          if(persp){  //Calculate ray direction for perspective...
             ray.dir = ray.origin-frustum; //Ray originates from focal point
@@ -69,21 +72,21 @@ void Raytracer::run(){
             //Shoot ray and test for intersection
             coll = ray.intersectModelOctree(&oct, model);
 
+            //Exits when ray misses or hit opaque surface
+            if(coll.attr != SurfaceType::Reflective) break;
+
             //If ray hits reflective surface...
-            if(coll.attr == SurfaceType::Reflective){
-               //..stores collision attributes...
-               prevColl = coll;
-               prevRayDir = ray.dir;
+            //..stores collision attributes...
+            prevColl = coll;
+            prevRayDir = ray.dir;
 
-               //...calculate secondary ray origin...
-               ray.origin += coll.t * ray.dir;
+            //...calculate secondary ray origin...
+            ray.origin += coll.t * ray.dir;
 
-               //...and reflect ray direction vector in relation to surf. normal
-               ray.dir -= 2.0*ray.dir.dot(coll.n)*coll.n;
-               ray.dir *= 1.0/ray.dir.norm();
-            }
-         //Exits when ray misses or hit opaque surface
-         }while(coll.attr == SurfaceType::Reflective);
+            //...and reflect ray direction vector in relation to surf. normal
+            ray.dir -= 2.0*ray.dir.dot(coll.n)*coll.n;
+            ray.dir *= 1.0/ray.dir.norm();
+         }while(true);
 
          //Ray statistics
          if(coll.attr == SurfaceType::None && prevColl.attr == Reflective){

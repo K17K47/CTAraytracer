@@ -120,14 +120,11 @@ int OctreeBranch::insertSub(Triangle tri, AABB triAABB){
             if(dynamic_cast<OctreeLeaf*>(children[i])->obj.size()!=DEPTH){
                dynamic_cast<OctreeLeaf*>(children[i])->obj.push_back(tri);
                dynamic_cast<OctreeLeaf*>(children[i])->aabbs.push_back(triAABB);
-               //return 0;
             }else{
                split(i);
-               //return
                dynamic_cast<OctreeBranch*>(children[i])->insertSub(tri, triAABB);
             }
          }else{
-            //return
             dynamic_cast<OctreeBranch*>(children[i])->insertSub(tri, triAABB);
          }
       }
