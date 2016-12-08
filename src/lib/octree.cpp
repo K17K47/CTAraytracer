@@ -17,7 +17,7 @@
 *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#define DEPTH 10
+#define DEPTH 20
 #include"lib/octree.hpp"
 
 Octree::Octree(AABB box){
@@ -120,18 +120,20 @@ int OctreeBranch::insertSub(Triangle tri, AABB triAABB){
             if(dynamic_cast<OctreeLeaf*>(children[i])->obj.size()!=DEPTH){
                dynamic_cast<OctreeLeaf*>(children[i])->obj.push_back(tri);
                dynamic_cast<OctreeLeaf*>(children[i])->aabbs.push_back(triAABB);
-               return 0;
+               //return 0;
             }else{
                split(i);
-               return dynamic_cast<OctreeBranch*>(children[i])->insertSub(tri, triAABB);
+               //return
+               dynamic_cast<OctreeBranch*>(children[i])->insertSub(tri, triAABB);
             }
          }else{
-            return dynamic_cast<OctreeBranch*>(children[i])->insertSub(tri, triAABB);
+            //return
+            dynamic_cast<OctreeBranch*>(children[i])->insertSub(tri, triAABB);
          }
       }
    }
 
-   return -1;
+   return 0;
 }
 
 int OctreeBranch::insertSub(std::vector<Triangle> *tri, std::vector<AABB> *triAABB){
@@ -155,6 +157,8 @@ void OctreeBranch::split(unsigned idx){
 OctreeLeaf::OctreeLeaf(AABB box, OctreeBranch* parentNode){
    aabb = box;
    parent = parentNode;
+   obj.clear();
+   aabbs.clear();
 }
 
 bool OctreeLeaf::isLeaf() {return true;}
