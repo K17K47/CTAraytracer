@@ -38,6 +38,7 @@ class OctreeBranch : public OctreeNode{
       OctreeNode* children[8];
 
       OctreeBranch(AABB box, OctreeBranch* parentNode);
+      ~OctreeBranch();
 
       int insert(Triangle tri, Model *model);
       int insert(std::vector<Triangle> *tri, Model *model);
@@ -55,12 +56,14 @@ class OctreeBranch : public OctreeNode{
 
 class OctreeLeaf : public OctreeNode{
    public:
-   std::vector<Triangle> obj;
-   std::vector<AABB> aabbs;
+      std::vector<Triangle> obj;
+      std::vector<AABB> aabbs;
 
-   OctreeLeaf(AABB box, OctreeBranch* parentNode);
-   bool empty = true;
-   bool isLeaf();
+      OctreeLeaf(AABB box, OctreeBranch* parentNode);
+      ~OctreeLeaf();
+
+      bool empty = true;
+      bool isLeaf();
 };
 
 class Octree{
@@ -68,6 +71,8 @@ class Octree{
    OctreeBranch* root;
 
    Octree(AABB box);
+   ~Octree();
+
    int build(std::vector<Triangle> *obj, Model *model);
 };
 

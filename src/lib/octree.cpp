@@ -24,6 +24,10 @@ Octree::Octree(AABB box){
    root = new OctreeBranch(box, nullptr);
 }
 
+Octree::~Octree(){
+   delete root;
+}
+
 int Octree::build(std::vector<Triangle> *obj, Model *model){
    return root->insert(obj, model);
 }
@@ -33,6 +37,18 @@ OctreeBranch::OctreeBranch(AABB box, OctreeBranch* parentNode){
    aabb = box;
 
    for(int i = 0; i < 8; i++) children[i] = nullptr;
+}
+
+OctreeBranch::~OctreeBranch(){
+   for(int i = 0; i < 8; i++){
+      if(children[i] != nullptr){
+         if(children[i]->isLeaf()){
+            delete dynamic_cast<OctreeLeaf*>(children[i]);
+         }else{
+            delete dynamic_cast<OctreeBranch*>(children[i]);
+         }
+      }
+   }
 }
 
 int OctreeBranch::insert(Triangle tri, Model *model){
@@ -156,6 +172,11 @@ OctreeLeaf::OctreeLeaf(AABB box, OctreeBranch* parentNode){
    parent = parentNode;
    obj.clear();
    aabbs.clear();
+}
+
+OctreeLeaf::~OctreeLeaf(){
+   obj.resize(0);
+   aabbs.resize(0);
 }
 
 bool OctreeLeaf::isLeaf() {return true;}
