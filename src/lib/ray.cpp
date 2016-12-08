@@ -54,11 +54,11 @@ bool Ray::intersectAABB(AABB b){
    Vector3 boxMin = b.center - b.halfsize;
    Vector3 boxMax = b.center + b.halfsize;
 
-   double t1 = (boxMin[0] - origin[0])/dir[0];
-   double t2 = (boxMax[0] - origin[0])/dir[0];
+   real t1 = (boxMin[0] - origin[0])/dir[0];
+   real t2 = (boxMax[0] - origin[0])/dir[0];
 
-   double tmin = min(t1, t2);
-   double tmax = max(t1, t2);
+   real tmin = min(t1, t2);
+   real tmax = max(t1, t2);
 
    for (int i = 1; i < 3; ++i) {
       t1 = (boxMin[i] - origin[i])/dir[i];
