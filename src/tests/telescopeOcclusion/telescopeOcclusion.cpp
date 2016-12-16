@@ -18,6 +18,9 @@
 */
 
 #include<iostream>
+#include<fstream>
+
+#include<string>
 
 #include"lib/model.hpp"
 #include"lib/ray.hpp"
@@ -57,10 +60,10 @@ int main(){
 	delete model;
 
 	rayt.persp = false;   //Orthogonal projection
-   rayt.generateImg = false;   //Don't generate ray hit bitmap
+   rayt.generateImg = true;   //Don't generate ray hit bitmap
 
-   rayt.resx = 100; //Camera plane resolution
-   rayt.resy = 100;
+   rayt.resx = 400; //Camera plane resolution
+   rayt.resy = 400;
 
 	real arc = 0.22; //[rad]
 	real angle = -0.11; //[rad]
@@ -69,8 +72,15 @@ int main(){
    real angleStep = arc/(nSamples-1.0);
 
 	Matrix33 r;
+   std::filebuf fb;
+
+   std::string file;
 
 	for(int i=0; i<nSamples; i++){
+      file="output/image"+std::to_string(i)+".pgm";
+      fb.open(file, std::ios::out);
+
+      std::ostream os(&fb);
 		r = AngleAxis(angle,Vector3(0,1,0));
 
     	rayt.eye = r*Vector3(25,0,0);     //Set camera position
@@ -80,6 +90,24 @@ int main(){
 
    	rayt.frustum = Vector3(0,0,0); //Set convergence point for perspective view
 		rayt.run(); //Run Raytracer and generate image
+
+      //Export grayscale image in format .pgm
+      os<<"P2\n";   //PGM magic number
+      os<<rayt.resx<<" "<<rayt.resy<<"\n";  //Writes image resolution
+      os<<"255\n";  //Max color value
+
+      for(int yIdx=0; yIdx<rayt.resy; yIdx++){  //Write image data to standard out
+         for(int xIdx=0; xIdx<rayt.resx; xIdx++){
+            if(rayt.attrib[xIdx*rayt.resy+yIdx] != SurfaceType::None){
+               os<<85*(rayt.attrib[xIdx*rayt.resy+yIdx]-1)+(int)(85*real_abs(rayt.normMap[xIdx*rayt.resy+yIdx]))<<" ";
+            }else{
+               os<<"0 ";
+            }
+         }
+         os<<"\n";
+      }
+
+      fb.close();
 
       std::cout<<angle<<", ";
 		std::cout<<(100.0*rayt.rayHitCount[SurfaceType::Sensor])/(1.0*(rayt.rayHitCount[SurfaceType::Opaque]+rayt.rayHitCount[SurfaceType::Reflective]+rayt.rayHitCount[SurfaceType::Sensor]))<<"\n";
