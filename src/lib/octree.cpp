@@ -17,11 +17,15 @@
 *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#define DEPTH 20
+#define BUCKETSZ 16
+#define DEPTH 6
+
 #include"lib/octree.hpp"
 
 Octree::Octree(AABB box){
    root = new OctreeBranch(box, nullptr);
+
+   root->level = 0;
 }
 
 Octree::~Octree(){
@@ -35,6 +39,8 @@ int Octree::build(std::vector<Triangle> *obj, Model *model){
 OctreeBranch::OctreeBranch(AABB box, OctreeBranch* parentNode){
    parent = parentNode;
    aabb = box;
+
+   if(parentNode != nullptr) level = parentNode->level + 1;
 
    for(int i = 0; i < 8; i++) children[i] = nullptr;
 }
@@ -133,7 +139,7 @@ int OctreeBranch::insertSub(Triangle tri, AABB triAABB){
          }
 
          if(children[i]->isLeaf()){
-            if(dynamic_cast<OctreeLeaf*>(children[i])->obj.size()!=DEPTH){
+            if(dynamic_cast<OctreeLeaf*>(children[i])->obj.size() != BUCKETSZ || children[i]->level == DEPTH){
                dynamic_cast<OctreeLeaf*>(children[i])->obj.push_back(tri);
                dynamic_cast<OctreeLeaf*>(children[i])->aabbs.push_back(triAABB);
             }else{
@@ -172,6 +178,8 @@ OctreeLeaf::OctreeLeaf(AABB box, OctreeBranch* parentNode){
    parent = parentNode;
    obj.clear();
    aabbs.clear();
+
+   if(parentNode != nullptr) level = parentNode->level + 1;
 }
 
 OctreeLeaf::~OctreeLeaf(){

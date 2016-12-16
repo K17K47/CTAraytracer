@@ -30,6 +30,8 @@ class OctreeNode{
    OctreeNode* parent;
    AABB aabb;
 
+   unsigned level;
+
    virtual bool isLeaf()=0;
 };
 
