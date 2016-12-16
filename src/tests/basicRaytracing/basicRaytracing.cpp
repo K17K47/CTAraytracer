@@ -66,8 +66,8 @@ int main(){
    rayt.persp = true;   //View point in perspective
    rayt.generateImg = true;   //Generate ray hit bitmap
 
-   rayt.resx = 400; //Set camera plane resolution
-   rayt.resy = 400;
+   rayt.resx = 1600; //Set camera plane resolution
+   rayt.resy = 1600;
 
    std::chrono::time_point<std::chrono::steady_clock> start=std::chrono::steady_clock::now();
 
@@ -83,7 +83,11 @@ int main(){
 
    for(int yIdx=0; yIdx<rayt.resy; yIdx++){  //Write image data to standard out
       for(int xIdx=0; xIdx<rayt.resx; xIdx++){
-         os<<rayt.img[xIdx*rayt.resy+yIdx]<<" ";
+         if(rayt.attrib[xIdx*rayt.resy+yIdx] != SurfaceType::None){
+            os<<85*(rayt.attrib[xIdx*rayt.resy+yIdx]-1)+(int)(85*real_abs(rayt.normMap[xIdx*rayt.resy+yIdx]))<<" ";
+         }else{
+            os<<"0 ";
+         }
       }
       os<<"\n";
    }

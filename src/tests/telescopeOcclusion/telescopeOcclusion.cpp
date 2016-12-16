@@ -59,12 +59,12 @@ int main(){
 	rayt.persp = false;   //Orthogonal projection
    rayt.generateImg = false;   //Don't generate ray hit bitmap
 
-   rayt.resx = 75; //Camera plane resolution
-   rayt.resy = 75;
+   rayt.resx = 100; //Camera plane resolution
+   rayt.resy = 100;
 
-	real arc = 0.21; //[rad]
-	real angle = -0.105; //[rad]
-	unsigned nSamples = 50;
+	real arc = 0.22; //[rad]
+	real angle = -0.11; //[rad]
+	unsigned nSamples = 200;
 
    real angleStep = arc/(nSamples-1.0);
 
