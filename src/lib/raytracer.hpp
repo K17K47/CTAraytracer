@@ -22,6 +22,7 @@
 
 #include"aux/math.hpp"
 #include"lib/model.hpp"
+#include"lib/octree.hpp"
 
 class Raytracer{
    public:
@@ -39,6 +40,8 @@ class Raytracer{
 
       std::vector<SurfaceType> attrib; //Image data
       std::vector<real> normMap;
+
+      Octree *oct = nullptr;
 
       bool persp; //Sets perspective(true) or orthogonal(false) view
       bool generateImg; //If true, generate a image
