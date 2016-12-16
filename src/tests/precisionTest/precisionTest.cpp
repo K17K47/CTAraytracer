@@ -63,12 +63,14 @@ int main(){
    std::filebuf fb;
    fb.open("image.pgm", std::ios::out);
 
+   real planeSize = 14.0;
+
    std::ostream os(&fb);
 
    rayt.eye = Vector3(20,0,0);     //Set camera position
 
-   rayt.right = Vector3(0,14,0);    //Set basis for
-   rayt.up = Vector3(0,0,14);        //camera plane
+   rayt.right = Vector3(0,planeSize,0);    //Set basis for
+   rayt.up = Vector3(0,0,planeSize);        //camera plane
 
    rayt.frustum = Vector3(20,0,0);
 
@@ -83,11 +85,34 @@ int main(){
    rayt.run(); //Run Raytracer and generate image
 
    std::chrono::duration<real> t=std::chrono::steady_clock::now()-start;
-   std::cout<<rayt.resx*rayt.resy<<" rays in "<<t.count()<<" seconds"<<std::endl;
 
-   std::cout<<"Percentagem de raios refletidos ao sensor: "<<(100.0*rayt.rayHitCount[SurfaceType::Sensor])/(1.0*(rayt.rayHitCount[SurfaceType::Opaque]+rayt.rayHitCount[SurfaceType::Reflective]+rayt.rayHitCount[SurfaceType::Sensor]))<<std::endl;
+   std::cout<<"Estatísticas"<<std::endl;
 
-   for(int i = 0; i < 4; i++) std::cout<<i<<" : "<<rayt.rayHitCount[i]<<std::endl;
+   std::cout<<rayt.resx*rayt.resy<<" raios emitidos em "<<t.count()<<" segundos"<<std::endl;
+   std::cout<<"Média de "<<(rayt.resx*rayt.resy)/t.count()<<" raios/s"<<std::endl;
+
+   real unitArea = (planeSize*planeSize)/(rayt.resx*rayt.resy*1.0);
+   int rayCount = rayt.rayHitCount[SurfaceType::Opaque]+rayt.rayHitCount[SurfaceType::Reflective]+rayt.rayHitCount[SurfaceType::Sensor];
+
+   std::cout<<"Área por pixel: "<<unitArea<<" m^2/pixel"<<std::endl;
+
+   std::cout<<rayCount<<" raios colidiram com o telescópio"<<std::endl;
+
+   real raytracedArea = rayCount*unitArea;
+
+   std::cout<<"Área frontal do telescópio(Raytracer): "<<raytracedArea<<" m^2"<<std::endl;
+
+   real area = M_PI*6.5*6.5;
+
+   std::cout<<"Área frontal do telescópio(Teórico): "<<area<<" m^2"<<std::endl;
+
+   std::cout<<"Desvio: "<< raytracedArea - area <<" m^2"<<std::endl;
+
+   std::cout<<"Raios refletidos ao sensor(%, Raytracer): "<<(100.0*rayt.rayHitCount[SurfaceType::Sensor])/(1.0*rayCount)<<" %"<<std::endl;
+
+   std::cout<<"Raios refletidos ao sensor(%, Teórico): "<<(100.0*(area-9.0))/area<<" %"<<std::endl;
+
+   //for(int i = 0; i < 4; i++) std::cout<<i<<" : "<<rayt.rayHitCount[i]<<std::endl;
 
    //Export grayscale image in format .pgm
    os<<"P2\n";   //PGM magic number
