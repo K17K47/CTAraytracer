@@ -1,6 +1,6 @@
-.PHONY: all clean basicRaytracing telescopeOcclusion octreeTest
+.PHONY: all clean basicRaytracing telescopeOcclusion precisionTest
 
-all : basicRaytracing telescopeOcclusion octreeTest
+all : basicRaytracing telescopeOcclusion precisionTest
 
 basicRaytracing:
 	cd basicRaytracing && $(MAKE)
@@ -8,11 +8,11 @@ basicRaytracing:
 telescopeOcclusion:
 	cd telescopeOcclusion && $(MAKE)
 
-octreeTest:
-	cd octreeTest && $(MAKE)
+precisionTest:
+	cd precisionTest && $(MAKE)
 
 clean:
 	@echo "Clean."
 	cd basicRaytracing && $(MAKE) clean
 	cd telescopeOcclusion && $(MAKE) clean
-	cd octreeTest && $(MAKE) clean
+	cd precisionTest && $(MAKE) clean
