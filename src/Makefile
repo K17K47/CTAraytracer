@@ -4,7 +4,7 @@ LIBNAME := libRaytrace.so
 
 CPPFLAGS := -I./
 CFLAGS :=
-CXXFLAGS += -fPIC -std=c++11
+CXXFLAGS += -fPIC -std=c++11 -O3
 LDFLAGS += -shared -pthread
 
 SOURCES = $(wildcard aux/*.cpp) \
