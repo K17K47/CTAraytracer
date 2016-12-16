@@ -25,22 +25,23 @@
 
 class Raytracer{
    public:
+      Model *model;  //Mesh to raytrace
+
+      unsigned resx, resy; //Resolution of the generated image
+
+      int rayHitCount[4]; //Count how many rays missed, reflected or hit
+
       //EIGEN_MAKE_ALIGNED_OPERATOR_NEW
       Vector3 eye;         //Camera plane position
       Vector3 up, right;   //Camera plane basis
 
       Vector3 frustum;  //Convergence point for a viewpoint in perspective
 
-      Model *model;  //Mesh to raytrace
-
-      unsigned resx, resy; //Resolution of the generated image
-
-      std::vector<unsigned> img; //Image data
+      std::vector<SurfaceType> attrib; //Image data
+      std::vector<real> normMap;
 
       bool persp; //Sets perspective(true) or orthogonal(false) view
       bool generateImg; //If true, generate a image
-
-      unsigned rayHitCount[4]; //Count how many rays missed, reflected or hit
    public:
       void run(); //Raytrace and generate mesh image
 };

@@ -21,16 +21,17 @@
 #include"lib/ray.hpp"
 
 void Raytracer::run(){
-   Vector3 n = up.cross(right);  //Calculate camera plane normal
-   n *= (1.0/n.norm());
+   Vector3 n = (up.cross(right)).normalized();  //Calculate camera plane normal vector
 
    Vector3 scrOrigin = -0.5*(right+up);//Calculate screen origin on camera plane
 
    Vector3 cameraOrigin = scrOrigin + eye;
 
    if(generateImg){
-      img.clear();
-      img.reserve(resx*resy); //Preallocate enough memory for the generated image
+      attrib.clear();
+      normMap.clear();
+      attrib.reserve(resx*resy); //Preallocate enough memory for the generated image
+      normMap.reserve(resx*resy);
    }
 
    for(int i = 0; i < 4; i++) rayHitCount[i] = 0;
@@ -58,12 +59,7 @@ void Raytracer::run(){
          //Sets ray origin on pixel coordinate on camera plane
          ray.origin = cameraOrigin+t1*right+t2*up;
 
-         if(persp){  //Calculate ray direction for perspective...
-            ray.dir = ray.origin-frustum; //Ray originates from focal point
-            ray.dir *= 1.0/ray.dir.norm();//behind camera plane
-         }else{   //...or orthogonal view
-            ray.dir = n; //Ray perpendicular to camera plane
-         }
+         ray.dir = persp*(ray.origin-frustum).normalized()+(!persp)*n;
 
          prevColl.attr = SurfaceType::None;//Clears last collision surf. attrib.
 
@@ -84,29 +80,25 @@ void Raytracer::run(){
             ray.origin += coll.t * ray.dir;
 
             //...and reflect ray direction vector in relation to surf. normal
-            ray.dir -= 2.0*ray.dir.dot(coll.n)*coll.n;
-            ray.dir *= 1.0/ray.dir.norm();
+            ray.dir = (ray.dir - 2.0*ray.dir.dot(coll.n)*coll.n).normalized();
          }while(true);
 
          //Ray statistics
-         if(coll.attr == SurfaceType::None && prevColl.attr == Reflective){
+         if(coll.attr == SurfaceType::None && prevColl.attr == SurfaceType::Reflective){
             rayHitCount[SurfaceType::Reflective]++;
+            if(generateImg){
+               attrib.push_back(SurfaceType::Reflective);
+               normMap.push_back(prevRayDir.dot(prevColl.n));
+            }
          }else{
             rayHitCount[coll.attr]++;
-         }
-
-         if(generateImg){
-            if(coll.attr == SurfaceType::Opaque){ //If ray hits opaque surface
-               //Give it a dark gray color(0-127), proportional
-               //to ray director projection over surface normal
-               img.push_back(127*real_abs(ray.dir.dot(coll.n)));
-            }else if(prevColl.attr == SurfaceType::Reflective){
-               //If ray reflects and misses, give it a light gray color(128-255),
-               //proportional to surface normal projection over ray director
-               //before the reflection
-               img.push_back(128+127*real_abs(prevRayDir.dot(prevColl.n)));
-            }else{ //If ray misses,
-               img.push_back(255); //his color will be the Background color(255)
+            if(generateImg){
+               attrib.push_back(coll.attr);
+               if(coll.attr == SurfaceType::None){
+                  normMap.push_back(0.0);
+               }else{
+                  normMap.push_back(ray.dir.dot(coll.n));
+               }
             }
          }
       }
